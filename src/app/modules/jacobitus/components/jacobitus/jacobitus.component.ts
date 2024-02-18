@@ -217,7 +217,7 @@ export class JacobitusComponent implements OnInit {
                   qrImageBuffer,
                   50,
                   50,
-                  '-JACOBITUS- ' + nombre
+                  '->VDQUINOJ<- ' + nombre
                 ); // pdf con qr, return base64
                 console.log(
                   `${this.title} / post_firmaPdf: Se agrego QR al pdf correctamente`
