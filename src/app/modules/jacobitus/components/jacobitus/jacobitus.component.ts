@@ -19,7 +19,7 @@ import { FilesService } from 'src/app/modules/shared/files.service';
 import { METODOS_CODE } from '../../common/interfaces/jacobitus-validar-pdf-response.inteface';
 import { Router } from '@angular/router';
 import { IJacobitusFirmaPdfResponse } from '../../common/interfaces/jacobitus-firma-pdf-response.interface';
-import { convertBase64ToBlob } from 'src/app/common/utilities/convert-format-pdf';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-jacobitus',
@@ -193,12 +193,31 @@ export class JacobitusComponent implements OnInit {
                 console.log(
                   `${this.title} / post_firmaPdf: Inicio para agregar QR al pdf`
                 );
-                const qrImageBuffer = await createImageQR('NOMBRE: ' + nombre); // crea qr
+                const fechaActual = format(new Date(), 'dd-MM-yyyy HH:mm');
+                const fechaHasta = format(
+                  new Date(
+                    miCertficado?.validez?.hasta
+                      ? miCertficado.validez.hasta
+                      : new Date()
+                  ),
+                  'dd-MM-yyyy HH:mm'
+                );
+                const qrImageBuffer = await createImageQR(
+                  'NOMBRE: ' +
+                    nombre +
+                    '\nCORREO: ' +
+                    miCertficado?.titular?.EmailAddress +
+                    '\nFECHA FIRMA: ' +
+                    fechaActual +
+                    '\nVALIDEZ HASTA: ' +
+                    fechaHasta
+                ); // crea qr
                 this.pdfB64Content = await addQRinPDF(
                   this.pdfBuffer,
                   qrImageBuffer,
                   50,
-                  50
+                  50,
+                  '-JACOBITUS- ' + nombre
                 ); // pdf con qr, return base64
                 console.log(
                   `${this.title} / post_firmaPdf: Se agrego QR al pdf correctamente`
