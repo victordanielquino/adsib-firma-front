@@ -8,7 +8,7 @@
     <h2
       class="mt-5 text-2xl font-bold leading-9 tracking-tight text-center text-gray-900"
     >
-      Firma Digital A.N. - ADSIB
+      Firma Digital A.N. - ADSIB V.3
     </h2>
   </div>
 
@@ -21,6 +21,10 @@
       ><span *ngIf="!this.status" class="text-red-500"
         >No hay tokens conectados!!!</span
       >
+    </p>
+    <p class="mt-1 text-sm text-center">
+      BY:
+      <span class="text-gray-500"> Victor Quino </span>
     </p>
     <p class="mt-1 text-sm text-center">
       Certificados Encontrados:
@@ -127,6 +131,36 @@
             </select>
           </div>
 
+          <div class="flex items-center mt-3 sm:col-span-3">
+            <label
+              for="posicionX"
+              class="my-1.5 text-sm font-medium leading-6 text-gray-900 mr-4 flex-none"
+              >Posición X:</label
+            >
+            <input
+              id="posicionX"
+              type="text"
+              formControlName="posicionX"
+              class="flex-grow rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Ingrese posición X"
+            />
+          </div>
+
+          <div class="flex items-center mt-3 sm:col-span-3">
+            <label
+              for="posicionY"
+              class="my-1.5 text-sm font-medium leading-6 text-gray-900 mr-4 flex-none"
+              >Posición Y:</label
+            >
+            <input
+              id="posicionY"
+              type="text"
+              formControlName="posicionY"
+              class="flex-grow rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Ingrese posición Y"
+            />
+          </div>
+
           <input
             #fileInput
             id="file-upload"
@@ -193,3 +227,8 @@
     </div>
   </div>
 </div>
+<app-modal-firmas
+  [isVisible]="firmaModal"
+  [firmaDetalle]="firmaValida"
+  (closeModal)="onModalClose()"
+></app-modal-firmas>

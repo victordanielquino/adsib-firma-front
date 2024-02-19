@@ -10,6 +10,10 @@ export const createImageQR = async (text: string) => {
   const qrImageResponse = await fetch(qrImageURI);
   return await qrImageResponse.arrayBuffer();
 };
+export const createImageQRBase64 = async (text: string) => {
+  const qrValue = text;
+  return await QRCode.toDataURL(qrValue);
+};
 
 /**
  * @Description: Agrega QR a PDF

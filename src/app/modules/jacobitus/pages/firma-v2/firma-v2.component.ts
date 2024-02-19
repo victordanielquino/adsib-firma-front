@@ -1,33 +1,36 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { IJacobitusStatusResponse } from '../../common/interfaces/jacobitus-status-response.interface';
+import { IJacobitusTokenConnected } from '../../common/interfaces/jacobitus-token-connected-response.interface';
+import {
+  ICertificado,
+  IJacobitusTokenDataResponse,
+} from '../../common/interfaces/jacobitus-token-data-response.interface';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { addQRinPDF, createImageQR } from 'src/app/common/utilities/qr';
-import { PDF } from 'src/app/modules/jacobitus/common/data/pdf';
-import { IJacobitusFirmaPdfRequest } from 'src/app/modules/jacobitus/common/interfaces/jacobitus-firma-pdf-request.interface';
-import { IJacobitusStatusResponse } from 'src/app/modules/jacobitus/common/interfaces/jacobitus-status-response.interface';
-import { IJacobitusTokenConnected } from 'src/app/modules/jacobitus/common/interfaces/jacobitus-token-connected-response.interface';
-import {
-  ICertificado,
-  IJacobitusTokenDataResponse,
-} from 'src/app/modules/jacobitus/common/interfaces/jacobitus-token-data-response.interface';
-import { JacobitusService } from 'src/app/modules/jacobitus/services/jacobitus.service';
-import { FilesService } from 'src/app/modules/shared/files.service';
-import { METODOS_CODE } from '../../common/interfaces/jacobitus-validar-pdf-response.inteface';
-import { Router } from '@angular/router';
 import { IJacobitusFirmaPdfResponse } from '../../common/interfaces/jacobitus-firma-pdf-response.interface';
+import { JacobitusService } from '../../services/jacobitus.service';
+import { FilesService } from 'src/app/modules/shared/files.service';
+import { Router } from '@angular/router';
 import { format } from 'date-fns';
+import { addQRinPDF, createImageQR } from 'src/app/common/utilities/qr';
+import { IJacobitusFirmaPdfRequest } from '../../common/interfaces/jacobitus-firma-pdf-request.interface';
+import { PDF } from '../../common/data/pdf';
+import {
+  IFirmaSendByCode,
+  METODOS_CODE,
+} from '../../common/interfaces/jacobitus-validar-pdf-response.inteface';
 
 @Component({
-  selector: 'app-jacobitus',
-  templateUrl: './jacobitus.component.html',
-  styleUrls: ['./jacobitus.component.css'],
+  selector: 'app-firma-v2',
+  templateUrl: './firma-v2.component.html',
+  styleUrls: ['./firma-v2.component.scss'],
 })
-export class JacobitusComponent implements OnInit {
-  title = 'JacobitusComponent';
+export class FirmaV2Component {
+  title = 'FirmaV2Component';
   status: IJacobitusStatusResponse | null = null;
   tokenConneted: IJacobitusTokenConnected | null = null;
   tokenData: IJacobitusTokenDataResponse | null = null;
@@ -45,6 +48,8 @@ export class JacobitusComponent implements OnInit {
   firmaLoading: boolean = false;
   code: string = '';
   firma: IJacobitusFirmaPdfResponse | null = null;
+  firmaModal: boolean = false;
+  firmaValida: IFirmaSendByCode[] = [];
 
   constructor(
     private _serviceJacobitus: JacobitusService,
@@ -265,10 +270,10 @@ export class JacobitusComponent implements OnInit {
                       console.log(
                         `${this.title} / post_validarPdf: Proceso completado para validar la ultima firma`
                       );
-                      const code = response.datos.firmas.map((item) =>
+                      this.firmaValida = response.datos.firmas.map((item) =>
                         METODOS_CODE.transformarFirmaParaEnvio(item)
                       );
-                      this.code = JSON.stringify(code);
+                      this.code = JSON.stringify(this.firmaValida);
                       this.firmaLoading = false;
                     },
                     error: (error) => {
@@ -366,10 +371,11 @@ export class JacobitusComponent implements OnInit {
   }
 
   redirectToFirmaDetalle() {
-    this.router.navigate(['adsib/firma-detalle'], {
-      queryParams: { code: this.code },
-    });
+    // this.router.navigate(['adsib/firma-detalle'], {
+    //   queryParams: { code: this.code },
+    // });
     // this.router.navigate(['adsib/firma-detalle']);
+    this.openModal();
   }
 
   abrirPDFenNuevaPestana() {
@@ -386,5 +392,13 @@ export class JacobitusComponent implements OnInit {
     } catch (error) {
       console.error('Error al abrir el PDF:', error);
     }
+  }
+  openModal() {
+    this.firmaModal = true;
+  }
+
+  onModalClose() {
+    this.firmaModal = false;
+    // Cualquier otra lógica que necesites ejecutar cuando el modal se cierre
   }
 }

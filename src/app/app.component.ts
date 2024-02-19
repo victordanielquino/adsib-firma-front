@@ -12,9 +12,14 @@ export class AppComponent {
 
   constructor(private router: Router) {}
 
-  redirectToFirmaDetalle() {
+  redirectToFirmaV2() {
     this.verProductos = false;
-    this.router.navigate(['adsib']);
+    this.router.navigate(['adsib/v2']);
+    // this.router.navigate(['adsib/firma-detalle']);
+  }
+  redirectToFirmaV3() {
+    this.verProductos = false;
+    this.router.navigate(['adsib/v3']);
     // this.router.navigate(['adsib/firma-detalle']);
   }
 

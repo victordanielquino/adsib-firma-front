@@ -1,0 +1,205 @@
+<div class="flex flex-col justify-center min-h-full px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <img
+      class="w-auto h-10 mx-auto"
+      src="assets/logo-adsib.png"
+      alt="Your Company"
+    />
+    <h2
+      class="mt-5 text-2xl font-bold leading-9 tracking-tight text-center text-gray-900"
+    >
+      Firma Digital A.N. - ADSIB V.2
+    </h2>
+  </div>
+
+  <div class="mt-1 sm:mx-auto sm:w-full sm:max-w-sm">
+    <p class="mt-1 text-sm text-center">
+      JACOBITUS:
+      <span *ngIf="this.status" class="text-gray-500">{{
+        this.status.mensaje
+      }}</span
+      ><span *ngIf="!this.status" class="text-red-500"
+        >No hay tokens conectados!!!</span
+      >
+    </p>
+    <p class="mt-1 text-sm text-center">
+      BY:
+      <span class="text-gray-500"> Victor Quino </span>
+    </p>
+    <p class="mt-1 text-sm text-center">
+      Certificados Encontrados:
+      {{ tokenData?.datos?.data_token?.certificates || 0 }}
+    </p>
+    <p class="mt-1 text-sm text-center">
+      Inválidos:
+      {{
+        (tokenData?.datos?.data_token?.certificates || 0) -
+          certificados.length || 0
+      }}
+    </p>
+
+    <span *ngIf="formToken && tokenConneted && certificados.length == 0">
+      <form
+        [formGroup]="formToken"
+        class="mt-2 space-y-6"
+        (ngSubmit)="post_tokenData()"
+      >
+        <div>
+          <label
+            for="country"
+            class="block text-sm font-medium leading-6 text-gray-900"
+            >Seleccione un Token:</label
+          >
+          <div class="mt-2">
+            <select
+              id="country"
+              name="country"
+              autocomplete="country-name"
+              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
+              formControlName="slot"
+            >
+              <option value="">Seleccione un Certificado</option>
+              <option
+                *ngFor="let item of tokenConneted?.datos?.tokens"
+                value="{{ item.slot }}"
+              >
+                {{ item.model }} - {{ item.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between">
+            <label
+              for="password"
+              class="block text-sm font-medium leading-6 text-gray-900"
+              >Contraseña:</label
+            >
+          </div>
+          <div class="mt-2">
+            <input
+              type="password"
+              autocomplete="current-password"
+              formControlName="pin"
+              required
+              class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div *ngIf="!certificadosLoading">
+          <button
+            type="submit"
+            [disabled]="!formToken.valid"
+            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+          >
+            Consultar Certificados
+          </button>
+        </div>
+      </form>
+    </span>
+
+    <!-- Certificados -->
+    <span *ngIf="formCertificado && tokenData">
+      <form
+        [formGroup]="formCertificado"
+        class="mt-2 space-y-6"
+        (ngSubmit)="post_firmaPdf()"
+      >
+        <div class="sm:col-span-3">
+          <label
+            for="country"
+            class="block text-sm font-medium leading-6 text-gray-900"
+            >Seleccione un Certificado:</label
+          >
+          <div class="mt-2">
+            <select
+              id="country"
+              name="country"
+              autocomplete="country-name"
+              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
+              *ngIf="tokenData"
+              formControlName="alias"
+            >
+              <option value="" selected>Seleccione un Token</option>
+              <option
+                *ngFor="let item of certificados"
+                value="{{ item.alias }}"
+              >
+                {{ item.titular?.EmailAddress }}
+              </option>
+            </select>
+          </div>
+
+          <input
+            #fileInput
+            id="file-upload"
+            name="file-upload"
+            type="file"
+            accept=".pdf"
+            (change)="onFileSelected($event)"
+            class="sr-only"
+            [disabled]="firmaLoading"
+          />
+          <div
+            class="flex items-center flex-1 w-0 mt-2 cursor-pointer hover:bg-gray-700"
+            (click)="triggerFileInput()"
+          >
+            <svg
+              class="flex-shrink-0 w-5 h-5 text-gray-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <div class="flex flex-1 min-w-0 gap-2 ml-4">
+              <span class="flex-shrink-0 text-gray-400" for="file-upload">{{
+                file?.name || "Seleccione un archivo PDF"
+              }}</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!firmaLoading">
+          <button
+            type="submit"
+            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Firmar PDF
+          </button>
+        </div>
+      </form>
+    </span>
+    <div
+      class="mt-5"
+      *ngIf="tokenLoadind || certificadosLoading || firmaLoading"
+    >
+      <app-btn-loading></app-btn-loading>
+    </div>
+    <!-- Certificados End -->
+
+    <div class="mt-4" *ngIf="certificados.length > 0">
+      <app-btn-view-firmas
+        (clickDelPadre)="redirectToFirmaDetalle()"
+        [botonHabilitado]="code.length > 0"
+      />
+    </div>
+
+    <div class="mt-4" *ngIf="certificados.length > 0">
+      <app-btn-pdf
+        (clickDelPadre)="abrirPDFenNuevaPestana()"
+        [botonHabilitado]="code.length > 0"
+      ></app-btn-pdf>
+    </div>
+  </div>
+</div>
+
+<app-modal-firmas
+  [isVisible]="firmaModal"
+  [firmaDetalle]="firmaValida"
+  (closeModal)="onModalClose()"
+></app-modal-firmas>
