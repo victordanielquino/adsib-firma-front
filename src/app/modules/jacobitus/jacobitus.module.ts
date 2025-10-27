@@ -11,6 +11,7 @@ import { FirmaV3Component } from './pages/firma-v3/firma-v3.component';
 import { FirmaV2Component } from './pages/firma-v2/firma-v2.component';
 import { FirmaV1Component } from './pages/firma-v1/firma-v1.component';
 import { ModalFirmasComponent } from './components/modal-firmas/modal-firmas.component';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { ModalFirmasComponent } from './components/modal-firmas/modal-firmas.com
     FirmaV2Component,
     FirmaV1Component,
     ModalFirmasComponent,
+    HomeComponent,
   ],
   imports: [CommonModule, JacobitusRoutingModule, ReactiveFormsModule],
 })

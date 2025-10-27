@@ -17,6 +17,13 @@ export class AppComponent {
     this.router.navigate(['adsib/v2']);
     // this.router.navigate(['adsib/firma-detalle']);
   }
+
+  redirectToHome() {
+    this.verProductos = false;
+    this.router.navigate(['adsib/home']);
+    // this.router.navigate(['adsib/firma-detalle']);
+  }
+
   redirectToFirmaV3() {
     this.verProductos = false;
     this.router.navigate(['adsib/v3']);

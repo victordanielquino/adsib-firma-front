@@ -4,6 +4,7 @@ import { FirmaDetalleComponent } from './components/firma-detalle/firma-detalle.
 import { JacobitusGuard } from './guards/jacobitus.guard';
 import { FirmaV2Component } from './pages/firma-v2/firma-v2.component';
 import { FirmaV3Component } from './pages/firma-v3/firma-v3.component';
+import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
     path: 'firma-detalle',
     component: FirmaDetalleComponent,
     canActivate: [JacobitusGuard],
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
   },
 ];
 
